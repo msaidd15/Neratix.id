@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
+
 function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = false }) {
   const [loading, setLoading] = useState(false);
   const [dots, setDots] = useState(0);
   const formRef = useRef(null);
+  const { t } = useLanguage();
+  const form = t.form;
 
   useEffect(() => {
     if (!loading) return undefined;
@@ -34,7 +38,7 @@ function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = fal
       formRef.current.reset();
       onSuccess();
     } catch (error) {
-      alert("Gagal kirim data");
+      alert(form.failed);
       console.error(error);
     } finally {
       setLoading(false);
@@ -46,34 +50,36 @@ function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = fal
     <form className="form-kirim" onSubmit={handleSubmit} ref={formRef}>
       {showHiddenNext && <input type="hidden" name="_next" value="thanks.html" />}
       <div className="form-group">
-        <label htmlFor="nama">Nama</label>
-        <input name="nama" type="text" placeholder="Nama lengkap" required />
+        <label htmlFor="nama">{form.labels.name}</label>
+        <input name="nama" type="text" placeholder={form.placeholders.name} required />
       </div>
       <div className="form-group">
-        <label htmlFor="umur">Umur</label>
-        <input name="umur" type="number" placeholder="Umur" required />
+        <label htmlFor="umur">{form.labels.age}</label>
+        <input name="umur" type="number" placeholder={form.placeholders.age} required />
       </div>
       <div className="form-group">
-        <label htmlFor="email">Email</label>
-        <input name="email" type="email" placeholder="Email" required />
+        <label htmlFor="email">{form.labels.email}</label>
+        <input name="email" type="email" placeholder={form.placeholders.email} required />
       </div>
       <div className="form-group">
-        <label htmlFor="hp">No HP/WA</label>
-        <input name="hp" type="tel" placeholder="Nomor HP/WA" required />
+        <label htmlFor="hp">{form.labels.phone}</label>
+        <input name="hp" type="tel" placeholder={form.placeholders.phone} required />
       </div>
       <div className="form-group">
-        <label htmlFor="program">Program Kursus</label>
+        <label htmlFor="program">{form.labels.program}</label>
         <select name="program" required defaultValue="">
           <option value="" disabled>
-            Pilih program kursus
+            {form.placeholders.program}
           </option>
-          <option value="neratix_roboexplorer">Neratix RoboExplorer</option>
-          <option value="neratix_robobuilder">Neratix RoboBuilder</option>
-          <option value="neratix_robengineer">Neratix RoboEngineer</option>
+          {form.programOptions.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
         </select>
       </div>
       <button type="submit" className="submit-btn" disabled={loading}>
-        {loading ? `Mengirim${".".repeat(dots)}` : buttonText}
+        {loading ? `${form.loading}${".".repeat(dots)}` : buttonText}
       </button>
     </form>
   );

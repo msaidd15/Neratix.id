@@ -1,12 +1,12 @@
-function SuccessModal({ show, onClose, message }) {
+function SuccessModal({ show, onClose, message, title, closeLabel }) {
   return (
     <div id="successModal" className={`success-modal ${show ? "show" : ""}`}>
       <div className="success-modal-content">
         <div className="success-icon">&#10003;</div>
-        <h3>Pendaftaran Berhasil!</h3>
+        <h3>{title}</h3>
         <p>{message}</p>
         <button onClick={onClose} className="success-btn" type="button">
-          Tutup
+          {closeLabel}
         </button>
       </div>
     </div>

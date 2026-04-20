@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import EnrollmentForm from "../components/EnrollmentForm";
 import ProgramModal from "../components/ProgramModal";
 import SuccessModal from "../components/SuccessModal";
-import { FAQS, HOME_STATS, PROGRAM_DATA, TESTIMONIALS } from "../data/content";
+import { useLanguage } from "../context/LanguageContext";
 
 function HomePage() {
   const [activeFaq, setActiveFaq] = useState(null);
@@ -11,12 +11,17 @@ function HomePage() {
   const [modalVariant, setModalVariant] = useState("program");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFloating, setShowFloating] = useState(true);
-  const [statValues, setStatValues] = useState(HOME_STATS.map(() => 0));
+  const { language, t } = useLanguage();
+  const home = t.home;
+
+  const [statValues, setStatValues] = useState(home.stats.map(() => 0));
   const statsRef = useRef(null);
 
   useEffect(() => {
     const el = statsRef.current;
     if (!el) return undefined;
+
+    setStatValues(home.stats.map(() => 0));
 
     let started = false;
     let rafId = 0;
@@ -29,12 +34,12 @@ function HomePage() {
 
       const tick = (now) => {
         const progress = Math.min((now - start) / duration, 1);
-        setStatValues(HOME_STATS.map((item) => Math.floor(progress * item.target)));
+        setStatValues(home.stats.map((item) => Math.floor(progress * item.target)));
 
         if (progress < 1) {
           rafId = requestAnimationFrame(tick);
         } else {
-          setStatValues(HOME_STATS.map((item) => item.target));
+          setStatValues(home.stats.map((item) => item.target));
         }
       };
 
@@ -58,7 +63,12 @@ function HomePage() {
       observer.disconnect();
       cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [home.stats]);
+
+  const whatsappMessage =
+    language === "en"
+      ? "Hello, I would like to get more information about Neratix robotics courses."
+      : "Halo kak, saya ingin mendapatkan informasi lebih lanjut mengenai program kursus robotik di Neratix.";
 
   return (
     <>
@@ -68,14 +78,14 @@ function HomePage() {
         </video>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1>Bangun Masa Depan dengan Robotika & Coding</h1>
-          <p>Belajar robotik dari dasar hingga mahir dengan metode menyenangkan dan interaktif.</p>
+          <h1>{home.heroTitle}</h1>
+          <p>{home.heroSubtitle}</p>
           <div className="hero-buttons">
             <a href="#form" className="btn-primary">
-              Daftar Sekarang
+              {home.registerNow}
             </a>
             <Link to="/coba-gratis" className="btn-secondary">
-              Coba Gratis
+              {home.tryFree}
             </Link>
           </div>
         </div>
@@ -88,15 +98,16 @@ function HomePage() {
             id="closeBtn"
             onClick={() => setShowFloating(false)}
             type="button"
-            aria-label="Close floating WhatsApp button"
+            aria-label={home.closeFloatingAria}
           >
             &#10005;
           </button>
           <a
-            href="https://wa.me/6282279258938?text=Halo%20kak%2C%20saya%20ingin%20mendapatkan%20informasi%20lebih%20lanjut%20mengenai%20program%20kursus%20robotik%20di%20Neratix%20?"
+            href={`https://wa.me/6282279258938?text=${encodeURIComponent(whatsappMessage)}`}
             target="_blank"
             rel="noreferrer"
             className="floating-btn"
+            aria-label={home.whatsappAria}
           >
             <i className="fab fa-whatsapp"></i>
           </a>
@@ -106,7 +117,7 @@ function HomePage() {
       <section className="stats-testi" ref={statsRef}>
         <div className="container">
           <div className="stats-grid">
-            {HOME_STATS.map((item, index) => (
+            {home.stats.map((item, index) => (
               <div className="stat-item" key={item.label}>
                 <div className="stat-number">{`${statValues[index]}${item.suffix}`}</div>
                 <div>{item.label}</div>
@@ -115,7 +126,7 @@ function HomePage() {
           </div>
           <div className="testimonials-carousel">
             <div className="carousel-track" id="carouselTrack">
-              {[...TESTIMONIALS, ...TESTIMONIALS.slice(0, 3)].map((item, idx) => (
+              {[...home.testimonials, ...home.testimonials.slice(0, 3)].map((item, idx) => (
                 <div className="testimonial-card" key={`${item.key}-${idx}`}>
                   <div className="testimonial-avatar">
                     <img src={item.image} alt={item.name} />
@@ -132,7 +143,7 @@ function HomePage() {
                     }}
                     className="testimonial-link"
                   >
-                    See more &rarr;
+                    {home.readMore} &rarr;
                   </a>
                 </div>
               ))}
@@ -145,18 +156,12 @@ function HomePage() {
         <div className="container">
           <div className="about-content">
             <div className="about-text">
-              <h3>Hi, Kami Neratix!</h3>
-              <p>
-                Misi kami adalah memberdayakan generasi inovator teknologi masa depan melalui kurikulum robotik
-                dan coding yang kreatif, interaktif, serta aplikatif.
-              </p>
-              <p>
-                Sejak berdiri, kami telah membantu banyak siswa mengembangkan keterampilan berpikir kritis,
-                kreativitas, dan problem solving di era digital.
-              </p>
+              <h3>{home.aboutTitle}</h3>
+              <p>{home.aboutParagraphs[0]}</p>
+              <p>{home.aboutParagraphs[1]}</p>
             </div>
             <div className="about-image">
-              <img src="/asset/img/kids.png" alt="Anak-anak belajar robotik" />
+              <img src="/asset/img/kids.png" alt={home.aboutImageAlt} />
             </div>
           </div>
         </div>
@@ -164,23 +169,23 @@ function HomePage() {
 
       <section id="kursus">
         <div className="container">
-          <h2 className="section-title">Belajar Apa di Neratix?</h2>
+          <h2 className="section-title">{home.learnTitle}</h2>
           <div className="learning-grid">
             <div className="learning-card">
               <i className="fas fa-robot"></i>
-              <h4>Robotics</h4>
+              <h4>{home.learningItems[0]}</h4>
             </div>
             <div className="learning-card">
               <i className="fas fa-code"></i>
-              <h4>Coding</h4>
+              <h4>{home.learningItems[1]}</h4>
             </div>
             <div className="learning-card">
               <i className="fas fa-gamepad"></i>
-              <h4>Game Development</h4>
+              <h4>{home.learningItems[2]}</h4>
             </div>
             <div className="learning-card">
               <i className="fas fa-lightbulb"></i>
-              <h4>Creative Thinking</h4>
+              <h4>{home.learningItems[3]}</h4>
             </div>
           </div>
         </div>
@@ -188,94 +193,52 @@ function HomePage() {
 
       <section id="program">
         <div className="container">
-          <h2 className="section-title">Program Kursus Kami</h2>
+          <h2 className="section-title">{home.programTitle}</h2>
           <div className="program-grid">
-            <div
-              className="program-card"
-              onClick={() => {
-                setModalVariant("program");
-                setModalKey("neratix_roboexplorer");
-              }}
-            >
-              <img src="/asset/img/program-roboexplorer.svg" alt="Ilustrasi Neratix RoboExplorer" />
-              <h4>
-                Neratix RoboExplorer
-                <span>(Usia 6-10 Tahun)</span>
-              </h4>
-              <ul className="program-list">
-                <li>Pengenalan robot & fungsi</li>
-                <li>Rakit LEGO + motor (dinamo)</li>
-                <li>Gerakan dasar (maju, mundur, putar)</li>
-                <li>Sensor sederhana (tilt & motion)</li>
-                <li>Coding visual (drag & drop)</li>
-                <li>Logika dasar (IF sederhana & LOOP)</li>
-              </ul>
-            </div>
-            <div
-              className="program-card"
-              onClick={() => {
-                setModalVariant("program");
-                setModalKey("neratix_robobuilder");
-              }}
-            >
-              <img src="/asset/img/program-robobuilder.svg" alt="Ilustrasi Neratix RoboBuilder" />
-              <h4>
-                Neratix RoboBuilder
-                <span>(Usia 9-14 Tahun)</span>
-              </h4>
-              <ul className="program-list">
-                <li>Pengenalan Arduino berbasis STEM</li>
-                <li>Dasar-dasar elektronika</li>
-                <li>Kontrol robot via HP (Bluetooth/WiFi)</li>
-                <li>Pemrograman dasar (C-like Arduino)</li>
-                <li>Proyek line follower sederhana</li>
-                <li>Logika kontrol & sensor lanjutan</li>
-              </ul>
-            </div>
-            <div
-              className="program-card"
-              onClick={() => {
-                setModalVariant("program");
-                setModalKey("neratix_robengineer");
-              }}
-            >
-              <img src="/asset/img/program-roboengineer.svg" alt="Ilustrasi Neratix RoboEngineer" />
-              <h4>
-                Neratix RoboEngineer
-                <span>(Usia 12-17 Tahun)</span>
-              </h4>
-              <ul className="program-list">
-                <li>Pemrograman Arduino (C/C++)</li>
-                <li>Struktur program & manajemen kode</li>
-                <li>Penggunaan sensor lanjutan</li>
-                <li>Kontrol motor tingkat lanjut</li>
-                <li>Serial monitor & teknik debugging</li>
-                <li>Proyek: robot pintar & automation system</li>
-              </ul>
-            </div>
+            {home.programCards.map((card) => (
+              <div
+                className="program-card"
+                key={card.key}
+                onClick={() => {
+                  setModalVariant("program");
+                  setModalKey(card.key);
+                }}
+              >
+                <img src={card.image} alt={card.imageAlt} />
+                <h4>
+                  {card.title}
+                  <span>({card.ageRange})</span>
+                </h4>
+                <ul className="program-list">
+                  {card.list.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="metode" className="metode">
         <div className="container">
-          <h2 className="section-title">Metode Belajar Kami</h2>
+          <h2 className="section-title">{home.methodTitle}</h2>
           <div className="metode-grid">
             <div className="metode-card">
               <i className="fas fa-project-diagram"></i>
-              <h4>Project Based Learning</h4>
+              <h4>{home.methodItems[0]}</h4>
             </div>
             <div className="metode-card">
               <i className="fas fa-tools"></i>
-              <h4>Hands-on Practice</h4>
+              <h4>{home.methodItems[1]}</h4>
             </div>
             <div className="metode-card">
               <i className="fas fa-smile"></i>
-              <h4>Fun & Interactive Learning</h4>
+              <h4>{home.methodItems[2]}</h4>
             </div>
             <div className="metode-card">
               <i className="fas fa-user-graduate"></i>
-              <h4>Mentoring Personal</h4>
+              <h4>{home.methodItems[3]}</h4>
             </div>
           </div>
         </div>
@@ -283,8 +246,8 @@ function HomePage() {
 
       <section id="faq">
         <div className="container">
-          <h2 className="section-title">FAQ</h2>
-          {FAQS.map((item, index) => {
+          <h2 className="section-title">{home.faqTitle}</h2>
+          {home.faqs.map((item, index) => {
             const open = activeFaq === index;
             return (
               <div className="faq-item" key={item.q}>
@@ -301,10 +264,10 @@ function HomePage() {
 
       <section id="form" className="form-section">
         <div className="container form-container">
-          <h2 className="section-title white-text">Daftar Sekarang</h2>
+          <h2 className="section-title white-text">{home.formTitle}</h2>
           <EnrollmentForm
             submitUrl="https://script.google.com/macros/s/AKfycbwtx4bBX6TugqnZVDIvYgHcLjZ9LdNyqbq0mMmjL-4lguR2_wQ8Gb1YwnboRc9iTJPG/exec"
-            buttonText="Daftar Sekarang"
+            buttonText={home.formButton}
             onSuccess={() => setShowSuccess(true)}
             showHiddenNext
           />
@@ -312,14 +275,18 @@ function HomePage() {
       </section>
 
       <ProgramModal
-        data={modalKey ? PROGRAM_DATA[modalKey] : null}
+        data={modalKey ? home.modalData[modalKey] : null}
         variant={modalVariant}
         onClose={() => setModalKey(null)}
+        defaultTitle={t.modal.defaultTitle}
+        closeAria={t.modal.closeAria}
       />
       <SuccessModal
         show={showSuccess}
         onClose={() => setShowSuccess(false)}
-        message="Terima kasih telah mendaftar. Kami akan segera menghubungi Anda."
+        title={t.modal.successTitle}
+        closeLabel={t.modal.successClose}
+        message={home.successMessage}
       />
     </>
   );

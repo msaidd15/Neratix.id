@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-function ProgramModal({ data, onClose, variant = "program" }) {
+
+function ProgramModal({ data, onClose, variant = "program", defaultTitle, closeAria }) {
   useEffect(() => {
     if (!data) return undefined;
 
@@ -22,11 +23,11 @@ function ProgramModal({ data, onClose, variant = "program" }) {
       }}
     >
       <div className="program-modal-card">
-        <button className="program-modal-close" type="button" onClick={onClose} aria-label="Close modal">
+        <button className="program-modal-close" type="button" onClick={onClose} aria-label={closeAria}>
           &times;
         </button>
         <div className="program-modal-content">
-          <h3 id="modal-title">{data?.title || "Program Title"}</h3>
+          <h3 id="modal-title">{data?.title || defaultTitle}</h3>
           <div id="modal-desc">
             {(data?.details || []).map(([label, value]) => (
               <p key={`${label}-${value}`}>
