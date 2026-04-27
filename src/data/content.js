@@ -13,7 +13,7 @@ export const PROGRAM_DATA = {
     title: "Neratix RoboBuilder",
     details: [
       ["Durasi", "10-14 pertemuan"],
-      ["Level", "Menengah (sudah mengenal dasar robotik)"],
+      ["Level", "Menengah (sudah mengenal dasar robotika)"],
       ["Metode", "Praktik langsung dengan Arduino"],
       ["Fasilitas", "Kit Arduino & mentor pendamping"],
       ["Output", "Mampu membuat robot berbasis sensor & kontrol"],
@@ -35,7 +35,7 @@ export const PROGRAM_DATA = {
       ["Durasi", "8-12 pertemuan"],
       ["Level", "Menengah - Lanjutan"],
       ["Metode", "Personal mentoring & project based"],
-      ["Fasilitas", "Kit robotik + modul custom"],
+      ["Fasilitas", "Kit robotika + modul custom"],
       ["Fokus", "Pengembangan skill coding & problem solving"],
       ["Output", "Mampu membuat project robot sesuai minat siswa"],
     ],
@@ -81,7 +81,7 @@ export const TESTIMONIALS = [
     name: "Budi",
     age: "45 th",
     image: "/asset/img/budi.png",
-    text: '"Neratix sangat membantu anak saya memahami logika robotik dengan cepat. Mentornya sabar dan responsif!"',
+    text: '"Neratix sangat membantu anak saya memahami logika robotika dengan cepat. Mentornya sabar dan responsif!"',
   },
   {
     key: "sita",

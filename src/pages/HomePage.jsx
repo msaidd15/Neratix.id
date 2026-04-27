@@ -10,6 +10,7 @@ function HomePage() {
   const [modalKey, setModalKey] = useState(null);
   const [modalVariant, setModalVariant] = useState("program");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showPromoPopup, setShowPromoPopup] = useState(false);
   const [showFloating, setShowFloating] = useState(true);
   const { language, t } = useLanguage();
   const home = t.home;
@@ -65,10 +66,18 @@ function HomePage() {
     };
   }, [home.stats]);
 
+  useEffect(() => {
+    const promoTimer = setTimeout(() => {
+      setShowPromoPopup(true);
+    }, 3000);
+
+    return () => clearTimeout(promoTimer);
+  }, []);
+
   const whatsappMessage =
     language === "en"
-      ? "Hello, I would like to get more information about Neratix robotics courses."
-      : "Halo kak, saya ingin mendapatkan informasi lebih lanjut mengenai program kursus robotik di Neratix.";
+      ? "Hello, I would like to get more information about Neratix Academy robotics courses."
+      : "Halo kak, saya ingin mendapatkan informasi lebih lanjut mengenai program kursus robotika di Neratix Academy.";
 
   return (
     <>
@@ -288,6 +297,31 @@ function HomePage() {
         closeLabel={t.modal.successClose}
         message={home.successMessage}
       />
+
+      <div
+        className={`promo-popup-overlay ${showPromoPopup ? "show" : ""}`}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) {
+            setShowPromoPopup(false);
+          }
+        }}
+      >
+        <div className="promo-popup-card">
+          <button
+            type="button"
+            className="promo-popup-close"
+            onClick={() => setShowPromoPopup(false)}
+            aria-label={t.modal.closeAria}
+          >
+            &times;
+          </button>
+          <span className="promo-popup-label">{home.promoLabel}</span>
+          <p className="promo-popup-text">{home.promoMessage}</p>
+          <a href="#form" className="promo-popup-btn" onClick={() => setShowPromoPopup(false)}>
+            {home.promoCta}
+          </a>
+        </div>
+      </div>
     </>
   );
 }

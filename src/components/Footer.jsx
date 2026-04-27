@@ -8,7 +8,7 @@ function Footer() {
     <footer className="footer">
       <div className="container footer-content">
         <div className="footer-section">
-          <h4>Neratix</h4>
+          <h4>Neratix Academy</h4>
           <p>{footer.tagline}</p>
         </div>
         <div className="footer-section">
@@ -23,7 +23,7 @@ function Footer() {
           <a href="mailto:info@neratix.id">info@neratix.id</a>
         </div>
       </div>
-      <div className="footer-bottom">&copy; 2026 Neratix. {footer.copyright}</div>
+      <div className="footer-bottom">&copy; 2026 Neratix Academy. {footer.copyright}</div>
     </footer>
   );
 }
