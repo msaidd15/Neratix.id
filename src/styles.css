@@ -138,8 +138,9 @@ body {
 }
 
 .logo img {
-  height: 2rem;
+  height: 2.3rem;
   width: auto;
+  display: block;
 }
 
 .hamburger {
@@ -943,9 +944,52 @@ section {
 }
 
 /* PROGRAM KURSUS */
+.program-category-slider {
+  width: fit-content;
+  max-width: 100%;
+  background: #ffffff;
+  border: 1px solid #d8e2ef;
+  border-radius: 20px;
+  padding: 0.75rem;
+  margin: 0 auto 2rem;
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.program-category-track {
+  display: flex;
+  gap: 0.65rem;
+  width: max-content;
+  margin: 0 auto;
+}
+
+.program-category-tab {
+  border: none;
+  background: transparent;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 14px;
+  padding: 0.95rem 1.4rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.program-category-tab:hover {
+  background: rgba(46, 166, 198, 0.12);
+  color: #0f5f74;
+}
+
+.program-category-tab.active {
+  background: var(--gradient);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(46, 166, 198, 0.3);
+}
+
 .program-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
 }
 
@@ -1708,6 +1752,10 @@ section {
 
 /* Tablet */
 @media (max-width: 768px) {
+  .logo img {
+    height: 1.95rem;
+  }
+
   .hamburger {
     display: block;
   }
@@ -1816,6 +1864,16 @@ section {
     grid-template-columns: 1fr;
   }
 
+  .program-category-slider {
+    padding: 0.55rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .program-category-tab {
+    font-size: 0.92rem;
+    padding: 0.78rem 1rem;
+  }
+
   .hero-image {
     max-width: 100%;
     height: auto;
@@ -1829,6 +1887,10 @@ section {
 
 /* HP kecil */
 @media (max-width: 480px) {
+  .logo img {
+    height: 1.75rem;
+  }
+
   .nav-container {
     padding: 0 1rem;
   }

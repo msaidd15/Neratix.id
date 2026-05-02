@@ -14,6 +14,11 @@ function HomePage() {
   const [showFloating, setShowFloating] = useState(true);
   const { language, t } = useLanguage();
   const home = t.home;
+  const defaultProgramCategoryKey = home.programCategories?.[0]?.key || null;
+  const [activeProgramCategory, setActiveProgramCategory] = useState(defaultProgramCategoryKey);
+  const activeCategoryData =
+    home.programCategories?.find((category) => category.key === activeProgramCategory) ||
+    home.programCategories?.[0];
 
   const [statValues, setStatValues] = useState(home.stats.map(() => 0));
   const statsRef = useRef(null);
@@ -65,6 +70,10 @@ function HomePage() {
       cancelAnimationFrame(rafId);
     };
   }, [home.stats]);
+
+  useEffect(() => {
+    setActiveProgramCategory(defaultProgramCategoryKey);
+  }, [defaultProgramCategoryKey]);
 
   useEffect(() => {
     const promoTimer = setTimeout(() => {
@@ -203,8 +212,24 @@ function HomePage() {
       <section id="program">
         <div className="container">
           <h2 className="section-title">{home.programTitle}</h2>
+          <div className="program-category-slider" role="tablist" aria-label={home.programTabsAria}>
+            <div className="program-category-track">
+              {home.programCategories.map((category) => (
+                <button
+                  key={category.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeCategoryData?.key === category.key}
+                  className={`program-category-tab ${activeCategoryData?.key === category.key ? "active" : ""}`}
+                  onClick={() => setActiveProgramCategory(category.key)}
+                >
+                  {category.label}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="program-grid">
-            {home.programCards.map((card) => (
+            {(activeCategoryData?.cards || []).map((card) => (
               <div
                 className="program-card"
                 key={card.key}
@@ -275,10 +300,11 @@ function HomePage() {
         <div className="container form-container">
           <h2 className="section-title white-text">{home.formTitle}</h2>
           <EnrollmentForm
-            submitUrl="https://script.google.com/macros/s/AKfycbwtx4bBX6TugqnZVDIvYgHcLjZ9LdNyqbq0mMmjL-4lguR2_wQ8Gb1YwnboRc9iTJPG/exec"
+            submitUrl="https://script.google.com/macros/s/AKfycbynLYBa3HECpIZqT0xStNwq4qtJ75rtDTUgpd_QdEVCXtxYNGTA1ZiRsyj7XpgF4z7N/exec"
             buttonText={home.formButton}
             onSuccess={() => setShowSuccess(true)}
             showHiddenNext
+            source="langsung"
           />
         </div>
       </section>

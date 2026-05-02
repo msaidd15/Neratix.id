@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 
-function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = false }) {
+function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = false, source = "" }) {
   const [loading, setLoading] = useState(false);
   const [dots, setDots] = useState(0);
+  const [programCategory, setProgramCategory] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState("");
   const formRef = useRef(null);
   const { t } = useLanguage();
   const form = t.form;
+  const filteredProgramOptions = form.programOptions.filter((item) => item.category === programCategory);
 
   useEffect(() => {
     if (!loading) return undefined;
@@ -36,6 +39,8 @@ function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = fal
       }
 
       formRef.current.reset();
+      setProgramCategory("");
+      setSelectedProgram("");
       onSuccess();
     } catch (error) {
       alert(form.failed);
@@ -49,6 +54,7 @@ function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = fal
   return (
     <form className="form-kirim" onSubmit={handleSubmit} ref={formRef}>
       {showHiddenNext && <input type="hidden" name="_next" value="thanks.html" />}
+      {source && <input type="hidden" name="source" value={source} />}
       <div className="form-group">
         <label htmlFor="nama">{form.labels.name}</label>
         <input name="nama" type="text" placeholder={form.placeholders.name} required />
@@ -66,12 +72,43 @@ function EnrollmentForm({ submitUrl, buttonText, onSuccess, showHiddenNext = fal
         <input name="hp" type="tel" placeholder={form.placeholders.phone} required />
       </div>
       <div className="form-group">
+        <label htmlFor="kode_referral">{form.labels.referralCode}</label>
+        <input name="kode_referral" type="text" placeholder={form.placeholders.referralCode} />
+      </div>
+      <div className="form-group">
+        <label htmlFor="program_category">{form.labels.programCategory}</label>
+        <select
+          name="program_category"
+          required
+          value={programCategory}
+          onChange={(event) => {
+            setProgramCategory(event.target.value);
+            setSelectedProgram("");
+          }}
+        >
+          <option value="" disabled>
+            {form.placeholders.programCategory}
+          </option>
+          {form.programCategoryOptions.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="form-group">
         <label htmlFor="program">{form.labels.program}</label>
-        <select name="program" required defaultValue="">
+        <select
+          name="program"
+          required
+          value={selectedProgram}
+          onChange={(event) => setSelectedProgram(event.target.value)}
+          disabled={!programCategory}
+        >
           <option value="" disabled>
             {form.placeholders.program}
           </option>
-          {form.programOptions.map((item) => (
+          {filteredProgramOptions.map((item) => (
             <option key={item.value} value={item.value}>
               {item.label}
             </option>
