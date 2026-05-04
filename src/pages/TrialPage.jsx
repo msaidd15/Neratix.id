@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EnrollmentForm from "../components/EnrollmentForm";
 import SuccessModal from "../components/SuccessModal";
 import { useLanguage } from "../context/LanguageContext";
@@ -7,6 +7,11 @@ function TrialPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const { t } = useLanguage();
   const trial = t.trial;
+
+  useEffect(() => {
+    document.body.classList.add("trial-page");
+    return () => document.body.classList.remove("trial-page");
+  }, []);
 
   return (
     <>
